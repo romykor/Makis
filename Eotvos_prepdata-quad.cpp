@@ -1,7 +1,7 @@
 // Preparation of Eotvos matrix
 // based on EGM2008 data
-// 25 April 2018
-// Final version
+// Version Quad
+// 05 August 2018
 
 #include <iostream>
 #include <fstream>
@@ -14,7 +14,7 @@
 
 using namespace std;
 
-#define MATR_DIM	3
+//#define MATR_DIM	3
 #define STR_SIZE	50
 typedef __float128 quadfloat;
 
@@ -26,7 +26,7 @@ int main()
 	quadfloat p[3][3],T[3][3];
 	quadfloat phi,lam,dg,tem,geoh,ortho;
 	quadfloat pl,pr,zl,zr,dum,ksi,eta;
-	quadfloat const zer=0.00000000000000000000000000000;
+	quadfloat const zer=0.000000000000000000000000;
 	
 //  Parameters
 	pl=2.00000000;
@@ -93,19 +93,19 @@ int main()
 		for (j=0;j<i;j++)  
 			T[i][j]=T[j][i];
 
-	res<<setw(3)<<id<<setprecision(6)<<endl;
+	res<<endl<<setw(3)<<id<<endl;
 	
-	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", phi);
-	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", lam);
-	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", geoh);
-	quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", ortho);
+	quadmath_snprintf(x_s, sizeof(x_s), "%.6Qe", phi);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", lam);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", geoh);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.6Qe", ortho);
 
 	res<<setw(25)<<x_s<<endl;
 	res<<setw(25)<<y_s<<endl;
 	res<<setw(25)<<z_s<<endl;
 	res<<setw(25)<<w_s<<endl;
 
-	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", dg);
+	quadmath_snprintf(x_s, sizeof(x_s), "%.8Qe", dg);
 	res<<endl<<setw(25)<<x_s<<endl;
 
 	s=1;
@@ -125,21 +125,23 @@ int main()
 	for (i=0;i<3;i++) {
 		res<<endl;
 		for (j=0;j<3;j++) {
-			quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", p[i][j]);
+			quadmath_snprintf(x_s, sizeof(x_s), "%.6Qe", p[i][j]);
 			res<<setw(25)<<x_s;
 		}
 	}
+	res<<endl;
 
 	for (i=0;i<3;i++) {
 		res<<endl;
 		for (j=0;j<3;j++) {
-			quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", T[i][j]);
+			quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", T[i][j]);
 			res<<setw(25)<<y_s;
 		}
 	}
+	res<<endl;
 
-	quadmath_snprintf(z_s, sizeof(z_s), "%.10Qe", ksi);
-	quadmath_snprintf(w_s, sizeof(w_s), "%.10Qe", eta);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", ksi);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.6Qe", eta);
 
 	res<<endl<<setw(19)<<z_s;
 	res<<endl<<setw(19)<<w_s;
