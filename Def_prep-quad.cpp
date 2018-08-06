@@ -19,41 +19,41 @@
 
 using namespace std;
 
-#define M3_DIM	3
-#define M6_DIM	6
+#define M3	3
+#define M6	6
 #define STR_SIZE	50
 typedef __float128 quadfloat;
 
 quadfloat const zer = 0.000000000000000000000000;
 quadfloat const one= 1.000000000000000000000000;
 
-void mulmat3(quadfloat a[M3_DIM][M3_DIM],quadfloat b[M3_DIM], quadfloat c[M3_DIM])
+void mulmat3(quadfloat a[M3][M3],quadfloat b[M3], quadfloat c[M3])
 {
 	int i,j;
 	quadfloat s;
 
-	for (i=0;i<M3_DIM;i++) {
+	for (i=0;i<M3;i++) {
 		s=zer;
-		for (j=0;j<M3_DIM;j++)
+		for (j=0;j<M3;j++)
 			s=s+a[i][j]*b[j];
 		c[i]=s;
 	}
 }
 
-void mulmat6(quadfloat a[M6_DIM][M6_DIM],quadfloat b[M6_DIM], quadfloat c[M6_DIM])
+void mulmat6(quadfloat a[M6][M6],quadfloat b[M6], quadfloat c[M6])
 {
 	int i,j;
 	quadfloat s;
 
-	for (i=0;i<M6_DIM;i++) {
+	for (i=0;i<M6;i++) {
 		s=zer;
-		for (j=0;j<M6_DIM;j++)
+		for (j=0;j<M6;j++)
 			s=s+a[i][j]*b[j];
 		c[i]=s;
 	}
 }
 
-void matinv6(quadfloat a[M6_DIM][M6_DIM], quadfloat b[M6_DIM][M6_DIM])
+void matinv6(quadfloat a[M6][M6], quadfloat b[M6][M6])
 {
 //  calculates the inverse of a matrix using Gauss-Jordan elimination
 //  the inverse of matrix a is calculated and stored in the matrix b
@@ -63,33 +63,33 @@ void matinv6(quadfloat a[M6_DIM][M6_DIM], quadfloat b[M6_DIM][M6_DIM])
     quadfloat dum;
 
 //  Build the unit matrix b
-    for (i=0;i<M6_DIM ;i++)  {
-      	for (j=0;j<M6_DIM ;j++)
+    for (i=0;i<M6 ;i++)  {
+      	for (j=0;j<M6 ;j++)
       		b[i][j]=zer;
       	b[i][i]=one;
     }
 
-	for (k=0;k<M6_DIM ;k++)  {
+	for (k=0;k<M6 ;k++)  {
 
 	  dum=a[k][k];
-	  for (j=0;j<M6_DIM ;j++)  {
+	  for (j=0;j<M6 ;j++)  {
 	  	  a[k][j]=a[k][j]/dum;
 	  	  b[k][j]=b[k][j]/dum;
 	  }
 
-	  for (i=k+1;i<M6_DIM ;i++) {
+	  for (i=k+1;i<M6 ;i++) {
 	      dum=a[i][k];
-	  	  for (j=0;j<M6_DIM ;j++) {
+	  	  for (j=0;j<M6 ;j++) {
 	  	  	  a[i][j]=a[i][j]-a[k][j]*dum;
 	  	  	  b[i][j]=b[i][j]-b[k][j]*dum;
 	  	  }
 	  }
 	}
 
-	for (k=M6_DIM-1;k>0;k--)
+	for (k=M6-1;k>0;k--)
 	  for (i=k-1;i>=0;i--) {
 	      dum=a[i][k];
-	  	  for (j=0;j<M6_DIM ;j++) {
+	  	  for (j=0;j<M6 ;j++) {
 	  	  	  a[i][j]=a[i][j]-a[k][j]*dum;
 	  	  	  b[i][j]=b[i][j]-b[k][j]*dum;
 		 }
@@ -116,13 +116,13 @@ int main()
 	quadfloat rl,dum,difg,ksi,eta,geksi,geeta,gH;  
 	quadfloat R,f,onf,e2,ep2,C,k,k1,k2,J,V;
 	quadfloat pgdf,pk2df,pk1df,pJdx;
-	quadfloat U[M3_DIM][M3_DIM],UG[M3_DIM][M3_DIM],T[M3_DIM][M3_DIM],TG[M3_DIM][M3_DIM],W[M3_DIM][M3_DIM];
-	quadfloat dP[M3_DIM][M3_DIM],WG[M3_DIM][M3_DIM],w1[M3_DIM],g[5],gp[5];
+	quadfloat U[M3][M3],UG[M3][M3],T[M3][M3],TG[M3][M3],W[M3][M3];
+	quadfloat dP[M3][M3],WG[M3][M3],w1[M3],g[5],gp[5];
 	quadfloat Ux,Uz,kg,om2,Ad,Bd,Uyy;
 	quadfloat eps,sk,ck,si,ci,se,ce;
 	quadfloat f21,f22,f23,f41,f42,f43,f51,f52;
-	quadfloat P[M6_DIM][M6_DIM],PW[M6_DIM][M6_DIM],PIN[M6_DIM][M6_DIM];
-	quadfloat gu[M6_DIM],ru[M6_DIM];
+	quadfloat P[M6][M6],PW[M6][M6],PIN[M6][M6];
+	quadfloat gu[M6],ru[M6];
 
     char x_s[STR_SIZE], y_s[STR_SIZE], z_s[STR_SIZE], w_s[STR_SIZE];
 	memset(x_s, 0, STR_SIZE * sizeof(char));
@@ -199,22 +199,18 @@ int main()
 	res<<" deg  -  Longitude = "<<setw(14)<<y_s<<" deg \n";
 	res<<"  - Orthometric Height = "<<setw(14)<<z_s;
 	res<<"  -   Geometric Height = "<<setw(14)<<w_s<<" m \n"<<endl;
+    res<<"\n Ellipsoid parameters \n";
     
-    
-    
-    
-//  ==========================
-    
-    
-    
-	res<<"\n Ellipsoid parameters \n"<<scientific<<setprecision(12);
-	res<<"  k1 = "<<k1<<" m^-1 \n";
-	res<<"  k2 = "<<k2<<" m^-1 \n";
-	res<<"   J = "<<J<<" m^-1 \n";
-	res<<"   k = "<<k<<" m^-1 \n";
-	
-	res<<"\n Foot on ellipsoid\n  gamma (ell) = "<<gell*mf<<" mgal";
-	
+	quadmath_snprintf(x_s, sizeof(x_s), "%.12Qe", k1);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.12Qe", k2);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.12Qe", J);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.12Qe", k);
+
+    res<<"  k1 = "<<x_s<<" m^-1 \n";
+	res<<"  k2 = "<<y_s<<" m^-1 \n";
+	res<<"   J = "<<z_s<<" m^-1 \n";
+	res<<"   k = "<<w_s<<" m^-1 \n";
+ 	
 	pk1df=-1.5*e2*dum*k2/(1.-e2);
 	pk2df=-0.5*e2*dum/(k2*a*a);
 //	pJdx=(pk1df+pk2df)/R;  //  double value
@@ -229,33 +225,43 @@ int main()
 	Uz=(om2+2.*gell*J)*gH;
 	Uz=Uz+dum-gell;
 
-    gamma=sqrt(Ux*Ux+Uz*Uz);
+    gamma=sqrtq(Ux*Ux+Uz*Uz);
 	
 	gS=gamma+dg;
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", gell);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", gamma);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", dg);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", gS);
 
-	res<<"\n Point S  (on surface) \n  gamma = "<<gamma*mf<<" mgal";
-	res<<"\n dg = "<<dg*mf<<" mgal";
-	res<<"\n  g = "<<gS*mf<<" mgal\n";
-
-	for(i=0;i<3;i++) 
-		for (j=0;j<3;j++) 
-			dat>>dP[i][j];
+    res<<"\n Foot on ellipsoid\n  gamma (ell) = "<<x_s;
+	res<<"\n Point S  (on surface) \n  gamma = "<<y_s;
+	res<<"\n dg = "<<z_s;
+	res<<"\n  g = "<<w_s<<endl;
+    
+ 	for(i=0;i<3;i++) 
+		for (j=0;j<3;j++)  {
+            dat>>x_s;
+			dP[i][j] = strtoflt128(x_s, NULL);
+        }
 		
 	for(i=0;i<3;i++) 
-		for (j=i;j<3;j++)  {  //  on surface
-			dat>>T[i][j];
-			T[j][i]=T[i][j];
+		for (j=0;j<3;j++)  {      //  on surface
+			dat>>y_s;
+            T[i][j] = strtoflt128(y_s, NULL);
 		}
 	
-	dat>>ksi>>eta;  //  on surface
+	dat>>z_s>>w_s;         //  on surface
+	ksi = strtoflt128(z_s, NULL);
+	eta = strtoflt128(w_s, NULL);
 	geksi=ksi/ras;
 	geeta=eta/ras;
-	
-	res<<fixed<<setprecision(4);
+   
+	res<<fixed;
 	res<<"\n  Disturbance matrix  T at point P - physical system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
-			res<<setw(23)<<T[i][j];
+            quadmath_snprintf(y_s, sizeof(y_s), "%.12Qe", T[i][j]);
+			res<<setw(23)<<y_s;
 			T[i][j]=T[i][j]/eot;
 		}
 		res<<endl;
@@ -267,11 +273,12 @@ int main()
 	U[2][2]=2.*(omega*omega+gell*J);
 	U[2][0]=U[0][2];
 
-	res<<setprecision(6);
 	res<<"\n  Constant part of Normal Eotvos matrix U at ellipsoid - geometric system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++) 
-			res<<setw(25)<<U[i][j]*eot;
+		for (j=0;j<3;j++) {
+            quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", U[i][j]);
+			res<<setw(28)<<z_s;
+        }
 		res<<endl;
 	}
 
@@ -288,22 +295,22 @@ int main()
 	res<<"\n  Complete Normal Eotvos matrix U at point P - geometric system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
-			res<<setw(25)<<U[i][j]*eot;
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", U[i][j]);
+			res<<setw(28)<<x_s;
 			UG[i][j]=U[i][j];
 		}
 		res<<endl;
 	}
+	
 	Uyy=U[1][1];
-
-//================================
-    
-    eps=geeta*tan(rl);
-    sk=sin(geksi);
-    ck=cos(geksi);
-    si=sin(geeta);
-    ci=cos(geeta);
-    se=sin(eps);
-    ce=cos(eps);
+   
+    eps=geeta*tanq(rl);
+    sk=sinq(geksi);
+    ck=cosq(geksi);
+    si=sinq(geeta);
+    ci=cosq(geeta);
+    se=sinq(eps);
+    ce=cosq(eps);
     
     f21=sk*si*ce-ci*se;
     f22=sk*ci*ce+si*se;
@@ -359,24 +366,13 @@ int main()
     P[5][5]=f52*f52;
     
 //	res<<"\n  Computed Rotation matrix P \n";
-//	res<<scientific<<setprecision(7)<<endl;
-	for(i=0;i<6;i++) {
-		for (j=0;j<6;j++) {
-			PW[i][j]=P[i][j];
-//			res<<setw(16)<<PW[i][j];
-		}
-//		res<<endl;
-	}
-	matinv6(PW,PIN);
-    
-//	res<<"\n\n  Computed Inverse Rotation matrix PIN \n";
-//	for(i=0;i<6;i++) {
-//		for (j=0;j<6;j++) {
-//			res<<setw(16)<<PIN[i][j];
-//		}
-//		res<<endl;
-//	}
 
+    for(i=0;i<6;i++) 
+		for (j=0;j<6;j++) 
+			PW[i][j]=P[i][j];
+
+    matinv6(PW,PIN);
+    
     gu[0]=U[0][0];
     gu[1]=U[0][1];
     gu[2]=U[0][2];
@@ -397,11 +393,11 @@ int main()
 		for (j=i;j<3;j++)  
 			U[j][i]=U[i][j];
 		
-	res<<fixed<<setprecision(6);
 	res<<"\n  Rotated Normal Eotvos matrix U at point P - physical system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++)  {
-			res<<setw(25)<<U[i][j]*eot;
+		for (j=0;j<3;j++) {
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", U[i][j]);
+			res<<setw(28)<<x_s;
 		}
 		res<<endl;
 	}
@@ -410,25 +406,38 @@ int main()
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			W[i][j]=U[i][j]+T[i][j];
-			res<<setw(25)<<W[i][j]*eot;
+            quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", W[i][j]);
+			res<<setw(28)<<y_s;
 		}	
 		res<<endl;
 	}
 	res<<endl;
+    
 	difg=(om2-U[0][0]-U[1][1]-U[2][2])*eot;
-	res<<"\n 2ù^2 -ÓUii = "<<difg<<"  Eotvos ";
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
+	res<<"\n 2ù^2 -ÓUii = "<<z_s<<"  Eotvos ";
+    
 	difg=(om2-W[0][0]-W[1][1]-W[2][2])*eot;
-	res<<"\n 2ù^2 -ÓWii = "<<difg<<"  Eotvos \n";
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
+	res<<"\n 2ù^2 -ÓUii = "<<z_s<<"  Eotvos "<<endl;    
+    
+    gnor<<fixed<<endl<<setw(3)<<sid<<endl;
 	
-	res<<endl;
-
-	gnor<<fixed<<setprecision(7);
-	gnor<<setw(3)<<sid<<setw(13)<<lat<<setw(13)<<lon<<setw(15)<<gH<<setw(15)<<h<<endl;
-	gnor<<setprecision(13)<<setw(22)<<gS*mf<<setw(20)<<dg*mf<<setw(22)<<gamma*mf<<endl;  // on surface
-	gnor<<setprecision(8)<<setw(20)<<C<<setprecision(13)<<setw(18)<<V<<endl;
-//
-//-------------------------------
-
+	quadmath_snprintf(x_s, sizeof(x_s), "%.6Qe", lat);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", lon);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", h);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.6Qe", gH);
+    gnor<<setw(16)<<x_s<<setw(16)<<y_s<<setw(16)<<w_s<<setw(16)<<z_s<<endl;
+    
+	quadmath_snprintf(y_s, sizeof(y_s), "%.15Qe", gS*mf);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.15Qe", dg*mf);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.15Qe", gamma*mf);
+	gnor<<endl<<setw(26)<<y_s<<setw(26)<<z_s<<setw(26)<<w_s<<endl;            // on surface
+	
+	quadmath_snprintf(z_s, sizeof(z_s), "%.15Qe", C);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.15Qe", V);
+	gnor<<setw(26)<<z_s<<setw(26)<<w_s<<endl<<endl;            // on surface
+	
     gu[0]=T[0][0];
     gu[1]=T[0][1];
     gu[2]=T[0][2];
@@ -448,13 +457,13 @@ int main()
 	for(i=0;i<3;i++) 
 		for (j=i;j<3;j++)  
 			TG[j][i]=TG[i][j];
-		
-	res<<fixed<<setprecision(6);
+
 	res<<"\n  Rotated Disturbance matrix T at point P - geometric system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++)  {
-			res<<setw(25)<<TG[i][j]*eot;
-		}
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", TG[i][j]*eot);
+			res<<setw(28)<<x_s;
+ 		}
 		res<<endl;
 	}
 	
@@ -462,27 +471,30 @@ int main()
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			WG[i][j]=UG[i][j]+TG[i][j];
-			res<<setw(25)<<WG[i][j]*eot;
+            quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", WG[i][j]*eot);
+			res<<setw(28)<<y_s;
 		}	
 		res<<endl;
 	}
-	res<<endl;
-	difg=(om2-UG[0][0]-UG[1][1]-UG[2][2])*eot;
-	res<<"\n 2ù^2 -ÓUGii = "<<difg<<"  Eotvos ";
-	difg=(om2-WG[0][0]-WG[1][1]-WG[2][2])*eot;
-	res<<"\n 2ù^2 -ÓWGii = "<<difg<<"  Eotvos \n";
 	
+	difg=(om2-UG[0][0]-UG[1][1]-UG[2][2])*eot;
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
+	res<<"\n 2ù^2 -ÓUGii = "<<z_s<<"  Eotvos ";
+    
+	difg=(om2-WG[0][0]-WG[1][1]-WG[2][2])*eot;
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
+	res<<"\n 2ù^2 -ÓUii = "<<z_s<<"  Eotvos \n"<<endl;    
+    
 	res<<endl;
 
-//================================
-
-	eps=sqrt(geksi*geksi+geeta*geeta);
-	w1[2]=-gS*cos(eps);   // geometric
+	eps=sqrtq(geksi*geksi+geeta*geeta);
+	w1[2]=-gS*cosq(eps);   // geometric
 	w1[0]=w1[2]*geksi;
 	w1[1]=w1[2]*geeta;
 
-	difg=sqrt(w1[0]*w1[0]+w1[1]*w1[1]+w1[2]*w1[2])-gS;
-	res<<"\n  ÓWGi^2 - gS = "<<difg*mf<<"  mgal  (geometric) \n";
+	difg=sqrtq(w1[0]*w1[0]+w1[1]*w1[1]+w1[2]*w1[2])-gS;
+    quadmath_snprintf(x_s, sizeof(x_s), "%.10Qe", difg*mf);
+	res<<"\n  ÓWGi^2 - gS = "<<x_s<<"  mgal  (geometric) \n";
 
 //  Points 3 & 4 correspond to A' and B'
 
@@ -493,30 +505,41 @@ int main()
 	g[1]=g[4]+(WG[0][2]*w1[0]+WG[1][2]*w1[1]+WG[2][2]*w1[2])*dP[1][2]/gS;
 
 	g[2]=gS+(WG[0][2]*w1[0]+WG[1][2]*w1[1]+WG[2][2]*w1[2])*dP[2][2]/gS;
+    
+	res<<"\n Geometric system on surface:\n";
 
 	for (n=0;n<3;n++)  {
-		difg=(g[n]-gS)*mf;
-		res<<"\n Geometric system on surface:";
-		res<<"\n Point "<<n<<" :  x ="<<setw(10)<<dP[n][0]<<" m ,  y ="<<setw(10)<<dP[n][1]<<" m ,  z ="<<setw(10)<<dP[n][2]<<" m ";
-		res<<"\tg = "<<g[n]*mf<<" mgal \t g("<<n<<") - gS = "<<difg<<" mgal \n";
-		gnor<<setprecision(3);
-		for(i=0;i<3;i++)
-			gnor<<setw(10)<<dP[n][i];
-		gnor<<setprecision(13)<<setw(23)<<g[n]*mf<<endl;
+//		difg=(g[n]-gS)*mf;
+        res<<" Point "<<setw(3)<<n; 
+        quadmath_snprintf(x_s, sizeof(x_s), "%.6Qe", dP[n][0]);
+        quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", dP[n][1]);
+        quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", dP[n][2]);
+        quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", g[n]*mf);
+        
+  		res<<" :  x ="<<setw(15)<<x_s<<" m ,  y ="<<setw(15)<<y_s<<" m ,  z ="<<setw(15)<<z_s<<" m ";
+ 		res<<"\tg = "<<setw(25)<<w_s<<" mgal \n";
+
+		gnor<<setw(16)<<x_s<<setw(16)<<y_s<<setw(16)<<z_s;
+ 		gnor<<setw(26)<<w_s<<endl;
 	}
-	gnor<<setw(23)<<g[3]*mf<<endl;
-	gnor<<setw(23)<<g[4]*mf<<endl;
-	gnor<<setprecision(6)<<endl;
+	
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", g[3]*mf);
+    quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", g[4]*mf);
+ 	
+	gnor<<endl<<setw(26)<<z_s<<endl;
+	gnor<<setw(26)<<w_s<<endl;
+	gnor<<endl;
 
 //==================================
 
 	w1[2]=-gS;		// physical
-	w1[0]=0.0;
-	w1[1]=0.0;
+	w1[0]=zer;
+	w1[1]=zer;
 
-	difg=sqrt(w1[0]*w1[0]+w1[1]*w1[1]+w1[2]*w1[2])-gS;
-	res<<"\n  ÓWi^2 - gS = "<<difg*mf<<"  mgal  (physical) \n";
-
+	difg=sqrtq(w1[0]*w1[0]+w1[1]*w1[1]+w1[2]*w1[2])-gS;
+    quadmath_snprintf(x_s, sizeof(x_s), "%.10Qe", difg*mf);
+	res<<"\n  ÓWi^2 - gS = "<<x_s<<"  mgal  (physical) \n";
+    
 //  Points 3 & 4 correspond to A' and B'
 
 	gp[3]=gS-W[0][2]*dP[0][0];
@@ -527,50 +550,75 @@ int main()
 	gp[1]=gp[4]-W[2][2]*dP[1][2]; 
 
 	gp[2]=gS-W[2][2]*dP[2][2];
+    
+	res<<"\n Physical system on surface:\n";     
 
 	for (n=0;n<3;n++)  {
-		difg=(gp[n]-gS)*mf;
-		res<<"\n Physical system on surface:";
-		res<<"\n Point "<<n<<" :  x ="<<setw(10)<<dP[n][0]<<" m ,  y ="<<setw(10)<<dP[n][1]<<" m ,  z ="<<setw(10)<<dP[n][2]<<" m ";
-		res<<"\tg = "<<gp[n]*mf<<" mgal \t g("<<n<<") - gS = "<<difg<<" mgal \n";
-		gnor<<setprecision(3);
-		for(i=0;i<3;i++)
-			gnor<<setw(10)<<dP[n][i];
-		gnor<<setprecision(13)<<setw(23)<<gp[n]*mf<<endl;
-	}
-	gnor<<setw(23)<<gp[3]*mf<<endl;
-	gnor<<setw(23)<<gp[4]*mf<<endl;
-	gnor<<setprecision(6)<<endl;
+//		difg=(gp[n]-gS)*mf;
+        res<<" Point "<<setw(3)<<n; 
+        quadmath_snprintf(x_s, sizeof(x_s), "%.6Qe", dP[n][0]);
+        quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", dP[n][1]);
+        quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", dP[n][2]);
+        quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", gp[n]*mf);
+        
+  		res<<" :  x ="<<setw(16)<<x_s<<" m ,  y ="<<setw(16)<<y_s<<" m ,  z ="<<setw(16)<<z_s<<" m ";
+ 		res<<"\tg = "<<setw(26)<<w_s<<" mgal \n";
 
-//-------------------------------------
+		gnor<<setw(16)<<x_s<<setw(16)<<y_s<<setw(16)<<z_s;
+ 		gnor<<setw(26)<<w_s<<endl;
+ 	}
+ 	
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", gp[3]*mf);
+    quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", gp[4]*mf);
+ 	
+	gnor<<endl<<setw(26)<<z_s<<endl;
+	gnor<<setw(26)<<w_s<<endl;
+	gnor<<endl;
 
-	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++) 
-			gnor<<setw(22)<<T[i][j]*eot;  // on surface - physical
+	for(i=0;i<3;i++) {             // on surface - physical
+		for (j=0;j<3;j++)  {
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", T[i][j]*eot);
+            gnor<<setw(28)<<x_s;
+        }
 		gnor<<endl;
 	}
 	gnor<<endl;
-	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++) 
-			gnor<<setw(22)<<U[i][j]*eot;  // on surface - physical
+	for(i=0;i<3;i++) {             // on surface - physical
+		for (j=0;j<3;j++)  {
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", U[i][j]*eot);
+            gnor<<setw(28)<<x_s;
+        }
 		gnor<<endl;
 	}
 	gnor<<endl;
-	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++) 
-			gnor<<setw(22)<<UG[i][j]*eot;  // on surface - geometric
+	for(i=0;i<3;i++) {             // on surface - geometric
+		for (j=0;j<3;j++)  {
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", TG[i][j]*eot);
+            gnor<<setw(28)<<x_s;
+        }
 		gnor<<endl;
 	}
 	gnor<<endl;
-	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++) 
-			gnor<<setw(22)<<TG[i][j]*eot;  // on surface - geometric
+	for(i=0;i<3;i++) {             // on surface - geometric
+		for (j=0;j<3;j++)  {
+            quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", UG[i][j]*eot);
+            gnor<<setw(28)<<x_s;
+        }
 		gnor<<endl;
 	}
 
-	gnor<<setw(27)<<Uyy*eot<<endl;  // on surface - geometric
-	gnor<<setprecision(6)<<setw(10)<<ksi<<setw(10)<<eta<<endl<<endl;  //on surface
+    quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", Uyy*eot);
+    quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", ksi);
+    quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", eta);
+	
+	gnor<<endl<<setw(28)<<x_s<<endl;          // on surface - geometric
+	gnor<<setw(15)<<y_s<<setw(15)<<z_s<<endl<<endl;           //on surface
 	
   }
+  
+    dat.close();
+    res.close();
+    gnor.close();
+    
 	return 0;
 }

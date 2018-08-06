@@ -5,11 +5,11 @@ CFLAGS 	= -Wall
 
 LDFLAGS = -lm -lquadmath
 
-all: Eotvos_prepdata-quad
+all: Def_prep-quad
 
-direct_v7-opt: Eotvos_prepdata-quad.cpp
+direct_v7-opt: Def_prep-quad.cpp
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) $(OPT3) -fopenmp $+ $(LDFLAGS) -o $@
 
 clean:
-	rm -rf Eotvos_prepdata-quad *.o *.out *.err *.prv *.pcf *.row *.sym
+	rm -rf Def_prep-quad *.o *.out *.err *.prv *.pcf *.row *.sym
 
