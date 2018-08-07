@@ -1,6 +1,6 @@
 // Simulation of gravimetry
 // based on EGM2008 data
-// 05 August 2018
+// 07 August 2018
 // Quad version with multiple sites, 3 net points
 // Matrix W in physical system, projection to geoid
 // (Rotation of U according to deflection of vertical)
@@ -187,7 +187,7 @@ int main()
 	pgdf=gell/Bd*(kg*dum+0.5*e2*dum*Bd/Ad);
 	k=pgdf/(R*gell);
 
-	res<<endl;
+	res<<fixed<<endl;
     
 	quadmath_snprintf(x_s, sizeof(x_s), "%.6Qe", lat);
 	quadmath_snprintf(y_s, sizeof(y_s), "%.6Qe", lon);
@@ -195,10 +195,10 @@ int main()
 	quadmath_snprintf(w_s, sizeof(w_s), "%.6Qe", gH);
 
 	res<<"\n Point "<<sid;
-    res<<" (P) :  Latitude = "<<setw(14)<<x_s;
+    res<<" (S) :  Latitude = "<<setw(14)<<x_s;
 	res<<" deg  -  Longitude = "<<setw(14)<<y_s<<" deg \n";
 	res<<"  - Orthometric Height = "<<setw(14)<<z_s;
-	res<<"  -   Geometric Height = "<<setw(14)<<w_s<<" m \n"<<endl;
+	res<<"  -   Geometric Height = "<<setw(14)<<w_s<<" m \n";
     res<<"\n Ellipsoid parameters \n";
     
 	quadmath_snprintf(x_s, sizeof(x_s), "%.12Qe", k1);
@@ -253,11 +253,14 @@ int main()
 	dat>>z_s>>w_s;         //  on surface
 	ksi = strtoflt128(z_s, NULL);
 	eta = strtoflt128(w_s, NULL);
+    res<<"\n ksi = "<<setw(15)<<z_s<<" arcsec";
+    res<<"\n eta = "<<setw(15)<<w_s<<" arcsec\n";
+    
 	geksi=ksi/ras;
 	geeta=eta/ras;
    
 	res<<fixed;
-	res<<"\n  Disturbance matrix  T at point P - physical system (in Eotvos units)\n\n";
+	res<<"\n  Disturbance matrix  T at point S - physical system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
             quadmath_snprintf(y_s, sizeof(y_s), "%.12Qe", T[i][j]);
@@ -273,7 +276,7 @@ int main()
 	U[2][2]=2.*(omega*omega+gell*J);
 	U[2][0]=U[0][2];
 
-	res<<"\n  Constant part of Normal Eotvos matrix U at ellipsoid - geometric system (in Eotvos units)\n\n";
+	res<<"\n  Constant part of Normal Eotvos matrix U at ellipsoid - geometric system (in  sec^-2)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
             quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", U[i][j]);
@@ -286,13 +289,13 @@ int main()
 	U[0][2]=U[0][2]-(gell*k*(k2-k1)+2*gell*pJdx)*gH;
 	U[1][1]=U[1][1]+gell*k2*k2*gH;  //  p2gdx  omitted
 	U[2][2]=U[2][2]-gell*(k1*k1+k2*k2)*gH;  //  p2gdx  omitted
-	U[2][0]=U[0][2];
+//	U[2][0]=U[0][2];
 		
 	for(i=0;i<3;i++) 
 		for (j=i;j<3;j++)  
 			U[j][i]=U[i][j];
 
-	res<<"\n  Complete Normal Eotvos matrix U at point P - geometric system (in Eotvos units)\n\n";
+	res<<"\n  Complete Normal Eotvos matrix U at point S - geometric system (in sec^-2)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
             quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", U[i][j]);
@@ -393,7 +396,7 @@ int main()
 		for (j=i;j<3;j++)  
 			U[j][i]=U[i][j];
 		
-	res<<"\n  Rotated Normal Eotvos matrix U at point P - physical system (in Eotvos units)\n\n";
+	res<<"\n  Rotated Normal Eotvos matrix U at point S - physical system (in sec^-2)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
             quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", U[i][j]);
@@ -402,7 +405,7 @@ int main()
 		res<<endl;
 	}
 	
-	res<<"\n  Full Eotvos matrix W at point P - physical system (in Eotvos units)\n\n";
+	res<<"\n  Full Eotvos matrix W at point S - physical system (in sec^-2)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			W[i][j]=U[i][j]+T[i][j];
@@ -419,7 +422,7 @@ int main()
     
 	difg=(om2-W[0][0]-W[1][1]-W[2][2])*eot;
     quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
-	res<<"\n 2ù^2 -ÓUii = "<<z_s<<"  Eotvos "<<endl;    
+	res<<"\n 2ù^2 -ÓWii = "<<z_s<<"  Eotvos "<<endl;    
     
     gnor<<fixed<<endl<<setw(3)<<sid<<endl;
 	
@@ -429,9 +432,9 @@ int main()
 	quadmath_snprintf(w_s, sizeof(w_s), "%.6Qe", gH);
     gnor<<setw(16)<<x_s<<setw(16)<<y_s<<setw(16)<<w_s<<setw(16)<<z_s<<endl;
     
-	quadmath_snprintf(y_s, sizeof(y_s), "%.15Qe", gS*mf);
-	quadmath_snprintf(z_s, sizeof(z_s), "%.15Qe", dg*mf);
-	quadmath_snprintf(w_s, sizeof(w_s), "%.15Qe", gamma*mf);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", gS*mf);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", dg*mf);
+	quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", gamma*mf);
 	gnor<<endl<<setw(26)<<y_s<<setw(26)<<z_s<<setw(26)<<w_s<<endl;            // on surface
 	
 	quadmath_snprintf(z_s, sizeof(z_s), "%.15Qe", C);
@@ -458,7 +461,7 @@ int main()
 		for (j=i;j<3;j++)  
 			TG[j][i]=TG[i][j];
 
-	res<<"\n  Rotated Disturbance matrix T at point P - geometric system (in Eotvos units)\n\n";
+	res<<"\n  Rotated Disturbance matrix T at point S - geometric system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++)  {
             quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", TG[i][j]*eot);
@@ -467,7 +470,7 @@ int main()
 		res<<endl;
 	}
 	
-	res<<"\n  Full Eotvos matrix W at point P - geometric system (in Eotvos units)\n\n";
+	res<<"\n  Full Eotvos matrix W at point S - geometric system (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			WG[i][j]=UG[i][j]+TG[i][j];
@@ -483,10 +486,8 @@ int main()
     
 	difg=(om2-WG[0][0]-WG[1][1]-WG[2][2])*eot;
     quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
-	res<<"\n 2ù^2 -ÓUii = "<<z_s<<"  Eotvos \n"<<endl;    
+	res<<"\n 2ù^2 -ÓWGii = "<<z_s<<"  Eotvos \n";    
     
-	res<<endl;
-
 	eps=sqrtq(geksi*geksi+geeta*geeta);
 	w1[2]=-gS*cosq(eps);   // geometric
 	w1[0]=w1[2]*geksi;
@@ -494,7 +495,7 @@ int main()
 
 	difg=sqrtq(w1[0]*w1[0]+w1[1]*w1[1]+w1[2]*w1[2])-gS;
     quadmath_snprintf(x_s, sizeof(x_s), "%.10Qe", difg*mf);
-	res<<"\n  ÓWGi^2 - gS = "<<x_s<<"  mgal  (geometric) \n";
+	res<<"\n\n  ÓWGi^2 - gS = "<<x_s<<"  mgal  (geometric) \n";
 
 //  Points 3 & 4 correspond to A' and B'
 
@@ -516,8 +517,8 @@ int main()
         quadmath_snprintf(z_s, sizeof(z_s), "%.6Qe", dP[n][2]);
         quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", g[n]*mf);
         
-  		res<<" :  x ="<<setw(15)<<x_s<<" m ,  y ="<<setw(15)<<y_s<<" m ,  z ="<<setw(15)<<z_s<<" m ";
- 		res<<"\tg = "<<setw(25)<<w_s<<" mgal \n";
+  		res<<" :  x ="<<setw(16)<<x_s<<" m ,  y ="<<setw(16)<<y_s<<" m ,  z ="<<setw(16)<<z_s<<" m ";
+ 		res<<"\tg = "<<setw(26)<<w_s<<" mgal\n";
 
 		gnor<<setw(16)<<x_s<<setw(16)<<y_s<<setw(16)<<z_s;
  		gnor<<setw(26)<<w_s<<endl;
@@ -538,7 +539,7 @@ int main()
 
 	difg=sqrtq(w1[0]*w1[0]+w1[1]*w1[1]+w1[2]*w1[2])-gS;
     quadmath_snprintf(x_s, sizeof(x_s), "%.10Qe", difg*mf);
-	res<<"\n  ÓWi^2 - gS = "<<x_s<<"  mgal  (physical) \n";
+	res<<"\n\n  ÓWi^2 - gS = "<<x_s<<"  mgal  (physical) \n";
     
 //  Points 3 & 4 correspond to A' and B'
 
@@ -562,7 +563,7 @@ int main()
         quadmath_snprintf(w_s, sizeof(w_s), "%.16Qe", gp[n]*mf);
         
   		res<<" :  x ="<<setw(16)<<x_s<<" m ,  y ="<<setw(16)<<y_s<<" m ,  z ="<<setw(16)<<z_s<<" m ";
- 		res<<"\tg = "<<setw(26)<<w_s<<" mgal \n";
+ 		res<<"\tg = "<<setw(26)<<w_s<<" mgal\n";
 
 		gnor<<setw(16)<<x_s<<setw(16)<<y_s<<setw(16)<<z_s;
  		gnor<<setw(26)<<w_s<<endl;
@@ -583,6 +584,7 @@ int main()
 		gnor<<endl;
 	}
 	gnor<<endl;
+    
 	for(i=0;i<3;i++) {             // on surface - physical
 		for (j=0;j<3;j++)  {
             quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", U[i][j]*eot);
@@ -591,6 +593,7 @@ int main()
 		gnor<<endl;
 	}
 	gnor<<endl;
+    
 	for(i=0;i<3;i++) {             // on surface - geometric
 		for (j=0;j<3;j++)  {
             quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", TG[i][j]*eot);
@@ -599,6 +602,7 @@ int main()
 		gnor<<endl;
 	}
 	gnor<<endl;
+    
 	for(i=0;i<3;i++) {             // on surface - geometric
 		for (j=0;j<3;j++)  {
             quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", UG[i][j]*eot);
