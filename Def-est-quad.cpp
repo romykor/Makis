@@ -331,8 +331,6 @@ for (s=0;s<12;s++) {
 	res<<"  - Orthometric Height = "<<setw(14)<<z_s;
 	res<<"  -   Geometric Height = "<<setw(14)<<w_s<<" m \n";
 
-//==================================== up to this point (07 August)
-
 	W[2][2]=-(gC-gS)/dP[3][2];
 	W[1][1]=Uyy*gS/gamms;
 	W[0][0]=om2-W[1][1]-W[2][2];
@@ -341,57 +339,57 @@ for (s=0;s<12;s++) {
 	Ns=-W[1][1]/gS;
 
 	hN[1]=0.5*Ls*dP[1][0]*dP[1][0];
-	epsa=fabs(0.5*Ls*dP[1][0]);
+	epsa=fabsq(0.5*Ls*dP[1][0]);
 	gN[1]=gA+W[2][2]*dP[1][2];
-	wz[1]=gN[1]*cos(epsa);
+	wz[1]=gN[1]*cosq(epsa);
 	W[0][2]=-(wz[1]-gS)/dP[1][0];
 
 	hN[2]=0.5*Ns*dP[2][1]*dP[2][1];
-	epsb=fabs(0.5*Ns*dP[2][1]);
+	epsb=fabsq(0.5*Ns*dP[2][1]);
 	gN[2]=gB+W[2][2]*dP[2][2];
-	wz[2]=gN[2]*cos(epsb);
+	wz[2]=gN[2]*cosq(epsb);
 	W[1][2]=-(wz[2]-gS)/dP[2][1];
 	
     calp=W[0][0]-2.0*W[1][1];
     cbet=W[0][0];
-    disc=sqrt(calp*calp+cbet*cbet);
+    disc=sqrtq(calp*calp+cbet*cbet);
 
     zet1=(-cbet+disc)/calp;
     zet2=(-cbet-disc)/calp;
 
-	alpha=atan(zet1);
+	alpha=atanq(zet1);
 	bet1=pi/4.-alpha;
 	theta=bet1;
 
-	alpha=atan(zet2);
+	alpha=atanq(zet2);
 	bet2=pi/4.-alpha;
 
 	disc=zet1;
-	if (fabs(bet2)<fabs(bet1))  {  
+	if (fabsq(bet2)<fabsq(bet1))  {  
 		disc=zet2;
 		theta=bet2;
 	}
 
 	beta=zet1*zet2;
 	
-	W[0][1]=(disc*disc-1.)*(W[1][1]-W[0][0])/(4.0*disc);
+	W[0][1]=(disc*disc-one)*(W[1][1]-W[0][0])/(4.0*disc);
 
 	nom=W[1][2];
 	den=W[0][2];
 	if (den!=0.)  
-		theta=atan(nom/den);
+		theta=atanq(nom/den);
 	else theta=pi/2.;
 	if (den<0.)  theta=theta+pi;
 	
 	beta=W[1][1];
 	alpha=W[0][0];
 	dum=2.*theta;
-	st=sin(theta)*sin(theta);
-	ct=cos(theta)*cos(theta);
+	st=sinq(theta)*sinq(theta);
+	ct=cosq(theta)*cosq(theta);
 	
 	W[0][0]=alpha*ct+beta*st;
 	W[1][1]=alpha*st+beta*ct;
-	W[0][1]=0.5*(alpha-beta)*sin(dum);  
+	W[0][1]=0.5*(alpha-beta)*sinq(dum);  
 
 //  Iteration
 
@@ -399,42 +397,41 @@ for (s=0;s<12;s++) {
 	Ns=-W[1][1]/gS;
 
 	hN[1]=0.5*Ls*dP[1][0]*dP[1][0];
-	epsa=fabs(0.5*Ls*dP[1][0]);
+	epsa=fabsq(0.5*Ls*dP[1][0]);
 	gN[1]=gA+W[2][2]*dP[1][2];
-	wz[1]=gN[1]*cos(epsa);
+	wz[1]=gN[1]*cosq(epsa);
 	W[0][2]=-(wz[1]-gS)/dP[1][0];
 
 	hN[2]=0.5*Ns*dP[2][1]*dP[2][1];
-	epsb=fabs(0.5*Ns*dP[2][1]);
+	epsb=fabsq(0.5*Ns*dP[2][1]);
 	gN[2]=gB+W[2][2]*dP[2][2];
-	wz[2]=gN[2]*cos(epsb);
+	wz[2]=gN[2]*cosq(epsb);
 	W[1][2]=-(wz[2]-gS)/dP[2][1];
 	
     calp=W[0][0]-2.0*W[1][1];
     cbet=W[0][0];
-    disc=sqrt(calp*calp+cbet*cbet);
+    disc=sqrtq(calp*calp+cbet*cbet);
 
     zet1=(-cbet+disc)/calp;
     zet2=(-cbet-disc)/calp;
 
-	alpha=atan(zet1);
+	alpha=atanq(zet1);
 	bet1=pi/4.-alpha;
 	theta=bet1;
 
-	alpha=atan(zet2);
+	alpha=atanq(zet2);
 	bet2=pi/4.-alpha;
 
 	disc=zet1;
-	if (fabs(bet2)<fabs(bet1))  {  
+	if (fabsq(bet2)<fabsq(bet1))  {  
 		disc=zet2;
 		theta=bet2;
 	}
 
 	beta=zet1*zet2;
 	
-	W[0][1]=(disc*disc-1.)*(W[1][1]-W[0][0])/(4.0*disc);
+	W[0][1]=(disc*disc-one)*(W[1][1]-W[0][0])/(4.0*disc);
 
-//-----------------------------------------
 /*
 	res<<"\n  Replace Wxz & Wyz with model values \n";
 	W[0][2]=SW[0][2];
@@ -445,20 +442,19 @@ for (s=0;s<12;s++) {
 		for (j=i;j<3;j++)  
 			W[j][i]=W[i][j];
 
-	res<<setprecision(8);
-	res<<"\n  Computed Eotvos matrix W at point P (Eotvos units) \n";
+ 	res<<"\n  Computed Eotvos matrix W at point P (Eotvos units) \n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			TW[i][j]=W[i][j];
-			res<<setw(18)<<TW[i][j]*eot;
+            quadmath_snprintf(x_s, sizeof(x_s), "%.12Qe", TW[i][j]*eot);
+			res<<setw(24)<<x_s;
 		}
 		res<<endl;
 	}
 
-	res<<scientific<<setprecision(9)<<endl;
-
 	difg=(om2-W[0][0]-W[1][1]-W[2][2])*eot;
-	res<<" 2ù^2 -ÓWii = "<<difg<<"  Eotvos \n";
+    quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", difg);
+	res<<"\n 2ù^2 -ÓWii = "<<z_s<<"  Eotvos "<<endl;    
 	
 //-----------------------------------------
 
@@ -473,24 +469,25 @@ for (s=0;s<12;s++) {
 	gAp=gApmod;
 	gBp=gBpmod;
 	
-//-------------------------------------------------
-
-	res<<setprecision(9);
 	res<<"\n Results using computed W and prime geometric gravities\n";
-	res<<"\n  gAp = "<<setw(20)<<gAp*mf<<"  mgal ";
-	res<<"\n  gBp = "<<setw(20)<<gBp*mf<<"  mgal \n";
-//	res<<"\n  gCp = "<<setw(17)<<gCp*mf<<"  mgal \n";
-
-//===================================
+    
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", gAp*mf);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", gBp*mf);
+	res<<"\n  gAp = "<<x_s<<"  mgal ";
+	res<<"\n  gBp = "<<y_s<<"  mgal \n";
 
 	Rh[0]=(gAp-gS)*gS/dP[1][0];
 	Rh[1]=(gBp-gS)*gS/dP[2][1];
 	Rh[2]=(gC-gS)*gS/dP[3][2];
 
 	res<<"\n Right-hand matrix of system at P\n";
-	res<<"\n G1 = "<<Rh[0];
-	res<<"\n G2 = "<<Rh[1];
-	res<<"\n G3 = "<<Rh[2];
+    
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", Rh[0]);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", Rh[1]);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", Rh[2]);
+	res<<"\n G1 = "<<x_s;
+	res<<"\n G2 = "<<y_s;
+	res<<"\n G3 = "<<z_s;
 	
 	matinv3(TW,Win);
 	
@@ -502,17 +499,21 @@ for (s=0;s<12;s++) {
 
 //  check
     Bd=Wx*Wx+Wy*Wy+Wz*Wz-gS*gS;
-    res<<"\n Wx^2 + Wy^2 + Wz^2 - gP^2 = "<<Bd<<" (zero)\n";
+    quadmath_snprintf(z_s, sizeof(z_s), "%.10Qe", Bd);
+    res<<"\n Wx^2 + Wy^2 + Wz^2 - gP^2 = "<<z_s<<"   (zero)\n";
 	
 	res<<"\n  First-order gradients";
-	res<<"\n  Wx = "<<Wx;
-	res<<"\n  Wy = "<<Wy;
-	res<<"\n  Wz = "<<Wz<<endl;
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", Wx);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", Wy);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", Wz);    
+	res<<"\n  Wx = "<<x_s;
+	res<<"\n  Wy = "<<y_s;
+	res<<"\n  Wz = "<<z_s<<endl;
 
-	dum=sqrt(Wx*Wx+Wy*Wy+Wz*Wz);
+	dum=sqrtq(Wx*Wx+Wy*Wy+Wz*Wz);
 	gP=dum;
-	dum=abs(Wz)/dum;
-	eps=acos(dum);
+	dum=fabsq(Wz)/dum;
+	eps=acosq(dum);
 	eps=eps*ras;
 
 	ksi=Wx/Wz;
@@ -525,9 +526,14 @@ for (s=0;s<12;s++) {
 	difeta=eta-modeta;
 
 	res<<"\n  Estimated Deflection of vertical - geometric \n";
-	res<<"\n eps = "<<eps<<" arcsec \n";
-	res<<"\n ksi = "<<ksi<<" arcsec   -  Difference = "<<difksi<<" arcsec";
-	res<<"\n eta = "<<eta<<" arcsec   -  Difference = "<<difeta<<" arcsec\n";
+	quadmath_snprintf(x_s, sizeof(x_s), "%.8Qe", eps);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.8Qe", ksi);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.8Qe", difksi);    
+	res<<"\n eps = "<<x_s<<" arcsec \n";
+	res<<"\n ksi = "<<y_s<<" arcsec   -  Difference = "<<z_s<<" arcsec";
+	quadmath_snprintf(y_s, sizeof(y_s), "%.8Qe", eta);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.8Qe", difeta);    
+	res<<"\n eta = "<<y_s<<" arcsec   -  Difference = "<<z_s<<" arcsec\n";
 
 	for (j=0;j<3;j++) {
 		beta=difksi;
@@ -538,23 +544,23 @@ for (s=0;s<12;s++) {
 		if (beta>dmax[1][1])  dmax[1][1]=beta;
 	}
 
-//==========================================
-//*
-	res<<fixed<<setprecision(6);
-	res<<"\n  Computed Disturbance matrix T at point S (in Eotvos units)\n";
+	//*
+	res<<"\n  Computed Disturbance matrix T at point S (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			Q[i][j]=(W[i][j]-U[i][j]);
-			res<<setw(18)<<Q[i][j]*eot;
+            quadmath_snprintf(w_s, sizeof(w_s), "%.12Qe", Q[i][j]*eot);
+			res<<setw(24)<<w_s;
 		}
 		res<<endl;
 	}
 	
-	res<<"\n Difference between computed-simulated matrix T at point S (in Eotvos units)\n";
+	res<<"\n\n Difference between computed-simulated matrix T at point S (in Eotvos units)\n\n";
 	for(i=0;i<3;i++) {
 		for (j=0;j<3;j++) {
 			dcW[i][j]=(Q[i][j]-T[i][j])*eot;
-			res<<setw(15)<<dcW[i][j];
+            quadmath_snprintf(x_s, sizeof(x_s), "%.12Qe", dcW[i][j]*eot);
+			res<<setw(24)<<x_s;
 			beta=(dcW[i][j]);
 			if (beta<dmin[i][j])  dmin[i][j]=beta;
 			if (beta>dmax[i][j])  dmax[i][j]=beta;
@@ -563,39 +569,39 @@ for (s=0;s<12;s++) {
 	}
 
 //*/
-	res<<endl;
 
-//=========================================
-
-	res<<"\n Results using model W \n";
+	res<<"\n\n Results using model W \n";
 
 	res<<"\n  Model Eotvos matrix W at point P (Eotvos units) \n";
 	for(i=0;i<3;i++) {
-		for (j=0;j<3;j++) 
-			res<<setw(17)<<SW[i][j]*eot;
+		for (j=0;j<3;j++)  {
+            quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", SW[i][j]*eot);
+			res<<setw(26)<<y_s;
+        }
 		res<<endl;
 	}
+	
 	gAp=gApp;
 	gBp=gBpp;
 	
-//-------------------------------------------------
-
-	res<<scientific<<setprecision(9);
-	res<<"\n Results using model W and prime physical gravities\n";
-	res<<"\n  gAp = "<<setw(20)<<gAp*mf<<"  mgal ";
-	res<<"\n  gBp = "<<setw(20)<<gBp*mf<<"  mgal \n";
-//	res<<"\n  gCp = "<<setw(17)<<gCp*mf<<"  mgal \n";
-
-//===================================
-	
+	res<<"\n\n Results using model W and prime physical gravities\n";
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", gAp*mf);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", gBp*mf);
+	res<<"\n  gAp = "<<x_s<<"  mgal ";
+	res<<"\n  gBp = "<<y_s<<"  mgal \n";
+    
 	Rh[0]=(gAp-gS)*gS/dP[1][0];
 	Rh[1]=(gBp-gS)*gS/dP[2][1];
 	Rh[2]=(gC-gS)*gS/dP[3][2];
 
 	res<<"\n Model Right-hand matrix of system at P\n";
-	res<<"\n G1 = "<<Rh[0];
-	res<<"\n G2 = "<<Rh[1];
-	res<<"\n G3 = "<<Rh[2];
+    
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", Rh[0]);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", Rh[1]);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", Rh[2]);
+	res<<"\n G1 = "<<x_s;
+	res<<"\n G2 = "<<y_s;
+	res<<"\n G3 = "<<z_s;
 
 	matinv3(SW,Win);
 
@@ -605,19 +611,23 @@ for (s=0;s<12;s++) {
 	Wy=TM[1];
 	Wz=TM[2];
 
-	res<<scientific<<setprecision(9)<<endl;
+	res<<endl;
 	res<<"\n  First-order gradients";
-	res<<"\n  Wx = "<<Wx;
-	res<<"\n  Wy = "<<Wy;
-	res<<"\n  Wz = "<<Wz<<endl;
-
+	quadmath_snprintf(x_s, sizeof(x_s), "%.16Qe", Wx);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.16Qe", Wy);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.16Qe", Wz);    
+	res<<"\n  Wx = "<<x_s;
+	res<<"\n  Wy = "<<y_s;
+	res<<"\n  Wz = "<<z_s<<endl;
+    
 //  check
     Bd=Wx*Wx+Wy*Wy+Wz*Wz-gS*gS;
-    res<<"\n Wx^2 + Wy^2 + Wz^2 - gP^2 = "<<Bd<<" (zero)\n";
-
-	dum=sqrt(Wx*Wx+Wy*Wy+Wz*Wz);
-	dum=abs(Wz)/dum;
-	eps=acos(dum);
+    quadmath_snprintf(z_s, sizeof(z_s), "%.10Qe", Bd);
+    res<<"\n Wx^2 + Wy^2 + Wz^2 - gP^2 = "<<z_s<<"   (zero)\n";
+    
+	dum=sqrtq(Wx*Wx+Wy*Wy+Wz*Wz);
+	dum=fabsq(Wz)/dum;
+	eps=acosq(dum);
 	eps=eps*ras;
 
 	ksi=Wx/Wz;
@@ -630,15 +640,26 @@ for (s=0;s<12;s++) {
 	difeta=eta-modeta;
 
 	res<<"\n  Deflection of vertical - physical \n";
-	res<<"\n eps = "<<eps<<" arcsec \n";
-	res<<"\n ksi = "<<ksi<<" arcsec   -  Difference = "<<difksi<<" arcsec";
-	res<<"\n eta = "<<eta<<" arcsec   -  Difference = "<<difeta<<" arcsec \n";
-
+	quadmath_snprintf(x_s, sizeof(x_s), "%.8Qe", eps);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.8Qe", ksi);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.8Qe", difksi);    
+	res<<"\n eps = "<<x_s<<" arcsec \n";
+	res<<"\n ksi = "<<y_s<<" arcsec   -  Difference = "<<z_s<<" arcsec";
+	quadmath_snprintf(y_s, sizeof(y_s), "%.8Qe", eta);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.8Qe", difeta);    
+	res<<"\n eta = "<<y_s<<" arcsec   -  Difference = "<<z_s<<" arcsec\n";
+    
 }
-	sta<<fixed<<setprecision(5);
+
+	sta<<fixed;
 	sta<<"\n Range of differences between computed & model vertical deviations - geometric (in arcsec)\n";
-	sta<<"\n ksi : "<<setw(14)<<dmin[0][0]<<"  to "<<setw(14)<<dmax[0][0];
-	sta<<"\n eta : "<<setw(14)<<dmin[1][1]<<"  to "<<setw(14)<<dmax[1][1]<<endl;
+	quadmath_snprintf(x_s, sizeof(x_s), "%.8Qe", dmin[0][0]);
+	quadmath_snprintf(y_s, sizeof(y_s), "%.8Qe", dmax[0][0]);
+	quadmath_snprintf(z_s, sizeof(z_s), "%.8Qe", dmin[1][1]);    
+	quadmath_snprintf(w_s, sizeof(w_s), "%.8Qe", dmax[1][1]);    
+    
+	sta<<"\n ksi : "<<setw(18)<<x_s<<"  to "<<setw(19)<<y_s;
+	sta<<"\n eta : "<<setw(18)<<z_s<<"  to "<<setw(19)<<w_s<<endl;
 	
 	return 0;
 }
